@@ -64,8 +64,9 @@ Essa arquitetura é indicada em aplicações:
 
 ```bash
 📁 public/
-  ├── index.html
   ├── manifest.json
   ├── service-worker.js
 📁 src/
   └── app.js
+├── index.html
+
