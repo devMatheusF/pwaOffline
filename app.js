@@ -1,11 +1,12 @@
 let db;
 
-// IndexedDB setup
 const request = indexedDB.open("notesApp", 1);
 
 request.onupgradeneeded = function(event) {
   db = event.target.result;
-  db.createObjectStore("notes", { keyPath: "id" });
+  if (!db.objectStoreNames.contains("notes")) {
+    db.createObjectStore("notes", { keyPath: "id" });
+  }
 };
 
 request.onsuccess = function(event) {
@@ -13,16 +14,22 @@ request.onsuccess = function(event) {
   displayNotes();
 };
 
-// Criar nota
 document.getElementById("noteForm").addEventListener("submit", function (e) {
   e.preventDefault();
-  const title = document.getElementById("title").value;
-  const content = document.getElementById("content").value;
+
+  const name = document.getElementById("name").value.trim();
+  const noteText = document.getElementById("note").value.trim();
+  console.log(name, noteText)
+
+  if (!name || !noteText) {
+    alert("Por favor, preencha todos os campos.");
+    return;
+  }
 
   const note = {
     id: Date.now(),
-    title,
-    content,
+    name,
+    note: noteText,
     createdAt: new Date().toISOString()
   };
 
@@ -34,6 +41,10 @@ document.getElementById("noteForm").addEventListener("submit", function (e) {
     document.getElementById("noteForm").reset();
     displayNotes();
   };
+
+  tx.onerror = () => {
+    alert("Erro ao salvar a nota.");
+  };
 });
 
 function displayNotes() {
@@ -43,17 +54,29 @@ function displayNotes() {
 
   request.onsuccess = function () {
     const notes = request.result;
-    const noteList = document.getElementById("noteList");
-    noteList.innerHTML = "";
+    const tbody = document.querySelector("#notesTable tbody");
+    tbody.innerHTML = ""; // Limpa tabela
+
+    if (notes.length === 0) {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td colspan="2" style="text-align:center; color:#666;">Nenhuma nota salva.</td>`;
+      tbody.appendChild(tr);
+      return;
+    }
 
     notes.forEach(note => {
-      const li = document.createElement("li");
-      li.innerHTML = `
-        <strong>${note.title}</strong><br>
-        ${note.content}<br>
-        <small>${new Date(note.createdAt).toLocaleString()}</small>
-      `;
-      noteList.appendChild(li);
+      const tr = document.createElement("tr");
+
+      const tdName = document.createElement("td");
+      tdName.textContent = note.name;
+
+      const tdNote = document.createElement("td");
+      tdNote.textContent = note.note;
+
+      tr.appendChild(tdName);
+      tr.appendChild(tdNote);
+
+      tbody.appendChild(tr);
     });
   };
 }
