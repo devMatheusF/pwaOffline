@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Notas Offline</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+  <h1>Notas Offline</h1>
+
+  <form id="noteForm">
+    <input type="text" id="title" placeholder="Título" required />
+    <textarea id="content" placeholder="Conteúdo da nota" required></textarea>
+    <button type="submit">Salvar Nota</button>
+  </form>
+
+  <ul id="noteList"></ul>
+
+  <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js')
+        .then(() => console.log('✅ Service Worker registrado'))
+        .catch(err => console.error('Erro ao registrar SW:', err));
+    }
+  </script>
+</body>
+</html>
