@@ -69,4 +69,10 @@ Essa arquitetura é indicada em aplicações:
 📁 src/
   └── app.js
 ├── index.html
+```
+
+---
+
+## Screenshot
+<img width="1964" height="1328" alt="image" src="https://github.com/user-attachments/assets/5036408d-5a96-4096-ac1f-1134f74f2b9d" />
 
